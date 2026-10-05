@@ -274,3 +274,4 @@ De esta manera, aunque alguien pudiera acceder a la base de datos, no encontrar√
 # Repositorio
 
 El c√≥digo fuente del proyecto se encuentra disponible en el repositorio de GitHub correspondiente a la PFO 2: https://github.com/Verocgreco/PFO2_Sist_Gestion_Tareas.git
+GitHub Pages:  https://verocgreco.github.io/PFO2_Sist_Gestion_Tareas/
