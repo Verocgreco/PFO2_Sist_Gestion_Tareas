@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>PFO 2 - Sistema de Gestión de Tareas</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f7f9;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        header {
+            background: #2c3e50;
+            color: white;
+            text-align: center;
+            padding: 50px 20px;
+        }
+
+        header h1 {
+            font-size: 2.3rem;
+            margin-bottom: 10px;
+        }
+
+        header p {
+            font-size: 1.1rem;
+        }
+
+        main {
+            max-width: 900px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+
+        section {
+            background: white;
+            padding: 30px;
+            margin-bottom: 25px;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+
+        h2 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+        }
+
+        ul {
+            margin-left: 25px;
+        }
+
+        li {
+            margin-bottom: 8px;
+        }
+
+        .endpoint {
+            background: #f0f3f5;
+            padding: 12px;
+            margin: 10px 0;
+            border-left: 4px solid #3498db;
+            border-radius: 5px;
+        }
+
+        .method {
+            font-weight: bold;
+            color: #2980b9;
+        }
+
+        .boton {
+            display: inline-block;
+            margin-top: 15px;
+            padding: 12px 20px;
+            background: #2c3e50;
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+        }
+
+        .boton:hover {
+            background: #34495e;
+        }
+
+        footer {
+            text-align: center;
+            padding: 25px;
+            color: #666;
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+
+<body>
+
+    <header>
+        <h1>PFO 2 - Sistema de Gestión de Tareas</h1>
+        <p>API REST desarrollada con Flask, autenticación y base de datos SQLite</p>
+    </header>
+
+    <main>
+
+        <section>
+            <h2>Descripción del proyecto</h2>
+
+            <p>
+                Este proyecto consiste en el desarrollo de un sistema básico
+                de gestión de tareas mediante una API REST.
+                El sistema permite registrar usuarios, iniciar sesión y acceder
+                a un recurso protegido mediante autenticación.
+            </p>
+        </section>
+
+        <section>
+            <h2>Tecnologías utilizadas</h2>
+
+            <ul>
+                <li>Python</li>
+                <li>Flask</li>
+                <li>SQLite</li>
+                <li>Werkzeug para el hash de contraseñas</li>
+                <li>Thunder Client para las pruebas de la API</li>
+            </ul>
+        </section>
+
+        <section>
+            <h2>Endpoints principales</h2>
+
+            <div class="endpoint">
+                <span class="method">POST</span>
+                /registro
+                <br>
+                Permite registrar un nuevo usuario.
+            </div>
+
+            <div class="endpoint">
+                <span class="method">POST</span>
+                /login
+                <br>
+                Verifica las credenciales e inicia la sesión.
+            </div>
+
+            <div class="endpoint">
+                <span class="method">GET</span>
+                /tareas
+                <br>
+                Permite acceder al sistema únicamente después de iniciar sesión.
+            </div>
+        </section>
+
+        <section>
+            <h2>Seguridad</h2>
+
+            <p>
+                Las contraseñas no se almacenan en texto plano.
+                Se utiliza una función de hash proporcionada por Werkzeug
+                para proteger las credenciales almacenadas en la base de datos.
+            </p>
+        </section>
+
+        <section>
+            <h2>Repositorio</h2>
+
+            <p>
+                El código fuente completo del proyecto se encuentra disponible
+                en GitHub.
+            </p>
+
+            <a
+                class="boton"
+                href="https://github.com/Verocgreco/PFO2_Sist_Gestion_Tareas"
+                target="_blank">
+                Ver repositorio en GitHub
+            </a>
+        </section>
+
+    </main>
+
+    <footer>
+        <p>PFO 2 - Programación sobre Redes</p>
+    </footer>
+
+</body>
+</html>
