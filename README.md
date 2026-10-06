@@ -16,6 +16,7 @@ El proyecto fue desarrollado como parte de la PFO 2 de la materia **Programació
 - **Flask** — desarrollo de la API REST.
 - **SQLite** — almacenamiento persistente de los usuarios.
 - **Werkzeug** — hashing y verificación segura de contraseñas.
+- **Requests** — comunicación del cliente de consola con la API.
 - **Thunder Client** — pruebas de los endpoints.
 - **GitHub** — repositorio y documentación del proyecto.
 
@@ -27,15 +28,19 @@ El proyecto fue desarrollado como parte de la PFO 2 de la materia **Programació
 PFO2/
 │
 ├── servidor.py
-├── usuarios.db
+├── cliente.py
+├── index.html
 └── README.md
 ```
 
 ### Archivos principales
 
 - `servidor.py`: contiene la API Flask, los endpoints, la conexión con SQLite y el sistema de autenticación.
-- `usuarios.db`: base de datos SQLite generada automáticamente al ejecutar el servidor.
+- `cliente.py`: cliente de consola que permite registrar usuarios, iniciar sesión y consultar el recurso `/tareas`.
+- `index.html`: página utilizada para GitHub Pages.
 - `README.md`: documentación del proyecto.
+
+La base de datos `usuarios.db` se genera automáticamente al ejecutar `servidor.py` y contiene los usuarios registrados de forma persistente.
 
 ---
 
@@ -45,14 +50,15 @@ Para ejecutar el proyecto se necesita:
 
 - Python 3 instalado.
 - Flask.
+- Requests.
 - Un cliente para realizar pruebas de API, como Thunder Client.
 
-### Instalación de Flask
+### Instalación de dependencias
 
 Desde la terminal, dentro de la carpeta del proyecto:
 
 ```bash
-pip install flask
+pip install flask requests
 ```
 
 La librería Werkzeug se instala automáticamente como dependencia de Flask.
@@ -74,6 +80,27 @@ http://127.0.0.1:5000
 ```
 
 La base de datos `usuarios.db` se crea automáticamente al iniciar el servidor.
+
+---
+
+# Cliente de consola
+
+Además de las pruebas realizadas con Thunder Client, el proyecto incluye un cliente de consola desarrollado en Python mediante la librería Requests.
+
+Con el servidor Flask en ejecución, abrir otra terminal, ubicarse en la carpeta del proyecto y ejecutar:
+
+```bash
+python cliente.py
+```
+
+El cliente presenta un menú con las siguientes opciones:
+
+1. Registrar usuario.
+2. Iniciar sesión.
+3. Ver tareas.
+4. Salir.
+
+El cliente utiliza una sesión de Requests para mantener la sesión iniciada y poder acceder posteriormente al recurso protegido `/tareas`.
 
 ---
 
@@ -142,8 +169,8 @@ http://127.0.0.1:5000/login
 
 ```json
 {
-    "usuario": "pfo2",
-    "contraseña": "1234"
+    "usuario": "verito",
+    "contraseña": "123456"
 }
 ```
 
@@ -216,7 +243,7 @@ Luego de iniciar sesión correctamente, el endpoint devuelve una página HTML de
 ```text
 Bienvenido al sistema de gestión de tareas
 
-Usuario: pfo2
+Usuario: verito
 
 Has accedido correctamente al sistema.
 ```
@@ -225,7 +252,7 @@ Has accedido correctamente al sistema.
 
 # Pruebas realizadas
 
-Se realizaron pruebas utilizando Thunder Client para verificar el correcto funcionamiento de la API.
+Se realizaron pruebas utilizando Thunder Client y el cliente de consola desarrollado en Python para verificar el correcto funcionamiento de la API.
 
 ### Registro exitoso
 
@@ -256,6 +283,16 @@ Se utilizaron credenciales incorrectas para comprobar el rechazo de acceso.
 Luego de iniciar sesión correctamente se accedió nuevamente a `/tareas`.
 
 **Resultado:** página HTML de bienvenida.
+
+### Pruebas mediante el cliente de consola
+
+También se verificó el funcionamiento del cliente de consola, incluyendo:
+
+- Registro de usuario.
+- Inicio de sesión exitoso.
+- Rechazo del acceso a `/tareas` sin autenticación.
+- Acceso autorizado a `/tareas` luego del inicio de sesión.
+- Rechazo de credenciales incorrectas.
 
 ---
 
