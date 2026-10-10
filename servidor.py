@@ -1,9 +1,13 @@
 from flask import Flask, request, jsonify, session
+import os
+import secrets
 import sqlite3
 from werkzeug.security import generate_password_hash, check_password_hash
 
 app = Flask(__name__)
-app.secret_key = "clave-secreta-pfo2"
+# En desarrollo local se genera una clave segura si no se configuró una variable
+# de entorno. Para conservar sesiones entre reinicios, configurar FLASK_SECRET_KEY.
+app.secret_key = os.environ.get("FLASK_SECRET_KEY") or secrets.token_hex(32)
 
 def crear_base_datos():
     conexion = sqlite3.connect("usuarios.db")
@@ -21,19 +25,43 @@ def crear_base_datos():
     conexion.commit()
     conexion.close()
 
-@app.route("/registro", methods=["POST"])
-def registro():
+def obtener_credenciales():
+    """Valida el JSON recibido y devuelve usuario y contraseña, o un error HTTP."""
+    if not request.is_json:
+        return None, (jsonify({"error": "El cuerpo debe enviarse como JSON"}), 400)
 
-    datos = request.get_json()
+    datos = request.get_json(silent=True)
+
+    if not isinstance(datos, dict):
+        return None, (jsonify({"error": "El cuerpo debe ser un objeto JSON válido"}), 400)
 
     usuario = datos.get("usuario")
     contraseña = datos.get("contraseña")
 
-    if not usuario or not contraseña:
-        return jsonify({"error": "Faltan datos"}), 400
+    if not isinstance(usuario, str) or not usuario.strip():
+        return None, (jsonify({"error": "El campo 'usuario' es obligatorio y debe ser texto"}), 400)
+
+    if not isinstance(contraseña, str) or not contraseña.strip():
+        return None, (jsonify({"error": "El campo 'contraseña' es obligatorio y debe ser texto"}), 400)
+
+    # Se eliminan espacios al principio y al final del nombre de usuario,
+    # pero no de la contraseña, porque forman parte de la credencial.
+    return {"usuario": usuario.strip(), "contraseña": contraseña}, None
+
+
+@app.route("/registro", methods=["POST"])
+def registro():
+
+    datos, error = obtener_credenciales()
+    if error:
+        return error
+
+    usuario = datos["usuario"]
+    contraseña = datos["contraseña"]
 
     contraseña_hasheada = generate_password_hash(contraseña)
 
+    conexion = None
     try:
         conexion = sqlite3.connect("usuarios.db")
         cursor = conexion.cursor()
@@ -44,32 +72,39 @@ def registro():
         )
 
         conexion.commit()
-        conexion.close()
-
         return jsonify({"mensaje": "Usuario registrado correctamente"}), 201
 
     except sqlite3.IntegrityError:
+        if conexion is not None:
+            conexion.rollback()
         return jsonify({"error": "El usuario ya existe"}), 409
+
+    finally:
+        if conexion is not None:
+            conexion.close()
 
 @app.route("/login", methods=["POST"])
 def login():
 
-    datos = request.get_json()
+    datos, error = obtener_credenciales()
+    if error:
+        return error
 
-    usuario = datos.get("usuario")
-    contraseña = datos.get("contraseña")
+    usuario = datos["usuario"]
+    contraseña = datos["contraseña"]
 
     conexion = sqlite3.connect("usuarios.db")
-    cursor = conexion.cursor()
+    try:
+        cursor = conexion.cursor()
 
-    cursor.execute(
-        "SELECT contraseña FROM usuarios WHERE usuario = ?",
-        (usuario,)
-    )
+        cursor.execute(
+            "SELECT contraseña FROM usuarios WHERE usuario = ?",
+            (usuario,)
+        )
 
-    resultado = cursor.fetchone()
-
-    conexion.close()
+        resultado = cursor.fetchone()
+    finally:
+        conexion.close()
 
     if resultado is None:
         return jsonify({"error": "Usuario o contraseña incorrectos"}), 401
